@@ -23,32 +23,36 @@ int main(int argc, char **argv)
 		num_of_floors = atoi(argv[1]);
 		egg_group = atoi(argv[2]);
 	}
-
-//	num_of_floors = atoi(argv[1]);
-//	egg_group = atoi(argv[2]);
-
-	egg *e = NULL;
-	e = lay_egg();	
+	//egg *e = NULL;
+	egg *e  = lay_egg();	
 	puts("\n");
 	int guessing = 1;
 	int maximum_floor = num_of_floors;
 	int minimum_floor = 1;
 	int lowest_number = 1;
 	int guess_number = 0;
+	double ratio = 1;
+	int difference;
 	while(guessing){
 		int max_safe_floor;
 		guess_number += 1;
+		difference = maximum_floor - minimum_floor;
+		ratio = (double) difference/egg_group;
 		int current_floor = educated_split(maximum_floor, minimum_floor, egg_group);
-		if(egg_group > 1){
+		if(egg_group > 1 && ratio >= 1){
 			//current_floor;
+			ratio = difference/egg_group;
 			printf("This is current floor multi guess %d\n", current_floor);
 			egg_drop_from_floor(e, current_floor);
 			printf("This is after egg drop\n");
+			printf("This is maximum floor %d\n", maximum_floor);
 			if(egg_is_broken(e) == 1){
 				egg_group -= 1;
 				printf("This is number of  eggs %d", egg_group);
 				maximum_floor = current_floor;
+				printf("This is maximum floor %d\n", maximum_floor);
 				minimum_floor = lowest_number;
+				//destroy_egg(e);
 				e = lay_egg();
 			}else{
 				minimum_floor = lowest_number = current_floor;
@@ -59,6 +63,7 @@ int main(int argc, char **argv)
 			max_safe_floor = brute_force(minimum_floor, maximum_floor, e);
 			printf("highest safe floor is %d\n", max_safe_floor - 1);
 			printf("num of guesses = %d\n", guess_number + (max_safe_floor - minimum_floor));
+			printf("this is final maximum floor %d", maximum_floor);
 			guessing = 0;
 		}
 		
@@ -78,6 +83,7 @@ int brute_force(int  lowest_number, int num_of_floors, egg *e){
 		if(egg_is_broken(e) == 1){
 			//printf("Maximum safe floor to drop from is %d floor", current_floor - 1);
 			//break;
+			//destroy_egg(e);
 			return(current_floor);
 		}
 	}
@@ -87,8 +93,8 @@ int brute_force(int  lowest_number, int num_of_floors, egg *e){
 
 int educated_split(int maximum_floor, int minimum_floor, int egg_group)
 {
-	int range = maximum_floor -(minimum_floor - 1);
+	int range = maximum_floor - minimum_floor;
 	int guess;
-	guess = (minimum_floor - 1) + floor(range/egg_group);
+	guess = (minimum_floor) + floor(range/egg_group);
 	return guess;
 }
