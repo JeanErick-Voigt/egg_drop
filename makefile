@@ -1,28 +1,15 @@
-# To make the executable TeamDriver type 
-# 
-#   make 
-# 
-# Refer to the object files as OBJECTS 
-# 
-OBJECTS = TeamDriver.o Team.o Person.o
+CFLAGS=-Wall -Wextra -Wpedantic -Wwrite-strings -Wstack-usage=1024 -Wfloat-equal -Waggregate-return -Winline
 
-# Compile the objects and store 
-# the executable in TeamDriver
-TeamDriver: $(OBJECTS)
-	gcc $(OBJECTS) -o TeamDriver
+all: egg egg_drop
 
-TeamDriver.o: Person.h Team.h Person.c Team.c TeamDriver.c
-	gcc -c TeamDriver.c
+egg: egg.c egg.h
+	gcc $(CFLAGS) -c egg.c -o egg.o
 
-Team.o: Person.h Team.h Person.c Team.c
-	gcc -c Team.c
+egg_drop: egg.o egg_drop.c
+	gcc $(CFLAGS) egg.o egg_drop.c -o egg_drop
 
-Person.o: Person.h Person.c
-	gcc -c Person.c
+debug: CFLAGS += -g
+debug: all
 
-# Running the Makefile as 
-#   make clean 
-# removes the object files 
-# and the executable. 
-clean: 
-	rm -f $(OBJECTS) TeamDriver 
+clean:
+	rm -f egg.o egg_drop
