@@ -23,8 +23,10 @@ int main(int argc, char **argv)
 		egg_group = atoi(argv[2]);
 	}
 	egg *e  = lay_egg();
+	egg *max = lay_egg();
 	puts("\n");
 	int guessing = 1;
+		
 	int maximum_floor = num_of_floors;
 	int minimum_floor = 1;
 	int lowest_number = 1;
@@ -34,10 +36,27 @@ int main(int argc, char **argv)
 	int max_safe_floor;
 	while(guessing){
 		// fringe cases
-		if(maximum_floor - 1 == minimum_floor){
-			egg_drop_from_floor(e, current_floor - 1);
+		//printf("This is current_floor %d, max floor %d, minimum_floor %d\n", current_floor, maximum_floor, minimum_floor);
+		if(maximum_floor - minimum_floor < 3){
+			guess_number += 1;
+			egg_drop_from_floor(e, (minimum_floor));
 			if(egg_is_broken(e) == 1){
+		//		printf("egg broke\n");
 				minimum_floor -= 1;
+			}
+			else if(egg_is_broken(e) != 1 && maximum_floor == num_of_floors){
+				minimum_floor = maximum_floor;
+			}else if(maximum_floor != num_of_floors && egg_is_broken(e) != 1){
+				e = lay_egg();
+				guess_number += 1;
+				egg_drop_from_floor(e, minimum_floor + 1);
+				if(egg_is_broken(e) == 1){
+					;
+				}else{
+					minimum_floor += 1;
+				}
+			}else{
+				minimum_floor += 1;
 			}
 			printf("%d is the maximum safe floor, found after %d drops\n", minimum_floor, guess_number);
 			break;
@@ -71,13 +90,19 @@ int main(int argc, char **argv)
 			}
 		}else{
 			max_safe_floor = brute_force(minimum_floor, maximum_floor, e);
-			printf("%d is the maximum safe floor, found after %d drops \n", (max_safe_floor - 1), 
+			if(max_safe_floor != num_of_floors)
+					max_safe_floor -= 1;
+			else
+				max_safe_floor = num_of_floors;
+			printf("%d is the maximum safe floor, found after %d drops \n", (max_safe_floor), 
 				guess_number + (max_safe_floor - minimum_floor));
+
 			guessing = 0;
 		}
 		
 	}
 	destroy_egg(e);
+	destroy_egg(max);
 	return(0);
 }
 
@@ -95,7 +120,9 @@ int brute_force(int  lowest_number, int num_of_floors, egg *e){
 			current_floor += 1;
 		}
 	}
-	return(0);
+
+
+	return(num_of_floors);
 
 }
 
