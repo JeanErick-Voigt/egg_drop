@@ -22,7 +22,7 @@ int main(int argc, char **argv)
 		num_of_floors = atoi(argv[1]);
 		egg_group = atoi(argv[2]);
 	}
-	egg *e  = lay_egg();	
+	egg *e  = lay_egg();
 	puts("\n");
 	int guessing = 1;
 	int maximum_floor = num_of_floors;
@@ -33,9 +33,17 @@ int main(int argc, char **argv)
 	int current_floor = 0;
 	int max_safe_floor;
 	while(guessing){
-		//fringe cases
-		if(maximum_floor - 1 == minimum_floor || minimum_floor == maximum_floor){
+		// fringe cases
+		if(maximum_floor - 1 == minimum_floor){
+			egg_drop_from_floor(e, current_floor - 1);
+			if(egg_is_broken(e) == 1){
+				minimum_floor -= 1;
+			}
 			printf("%d is the maximum safe floor, found after %d drops\n", minimum_floor, guess_number);
+			break;
+		}
+		if(minimum_floor == maximum_floor){
+			printf("%d is the maximum safe floor, found after %d drops\n", minimum_floor - 1, guess_number);
 			break;
 		}
 		if(maximum_floor - minimum_floor == minimum_floor + 1){
